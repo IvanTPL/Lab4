@@ -1,0 +1,44 @@
+﻿  pch.cpp
+D:\VStudio\Lab1-2\Dll1\pch.cpp(24,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(30,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(40,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(46,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(56,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(62,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(72,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+D:\VStudio\Lab1-2\Dll1\pch.cpp(78,32): warning C4244: =: преобразование "_Rep" в "float", возможна потеря данных
+          with
+          [
+              _Rep=double
+          ]
+  dllmain.cpp
+     Создается библиотека D:\VStudio\Lab1-2\WpfApp1\x64\Debug\Dll1.lib и объект D:\VStudio\Lab1-2\WpfApp1\x64\Debug\Dll1.exp
+  Dll1.vcxproj -> D:\VStudio\Lab1-2\WpfApp1\x64\Debug\Dll1.dll

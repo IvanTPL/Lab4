@@ -1,0 +1,120 @@
+﻿<Window x:Class="WpfApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="600" Width="1000">
+    <Window.Resources>
+        <local:GridConverter x:Key="GridConv"/>
+        <local:LenConv x:Key="LenConv"/>
+        <local:FloatConv x:Key="FloatConv"/>
+        <local:DoubleConv x:Key="DoubleConv"/>
+        <local:MinCoefConv x:Key="MinCoefConv"/>
+        <local:MaxCoefConv x:Key="MaxCoefConv"/>
+        <local:VMTimeConv x:Key="VMTimeConv"/>
+        <local:VMAccuracyConv x:Key="VMAccuracyConv"/>
+        <local:ChangedConv x:Key="ChangedConv"/>
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="New" Executed="command_new"/>
+        <CommandBinding Command="Open" Executed="command_open"/>
+        <CommandBinding Command="SaveAs" Executed="command_save"/>
+    </Window.CommandBindings>
+    <Window.InputBindings>
+        <KeyBinding Key="N" Modifiers="Control" Command="New"/>
+        <KeyBinding Key="O" Modifiers="Control" Command="Open"/>
+        <KeyBinding Key="S" Modifiers="Control" Command="SaveAs"/>
+    </Window.InputBindings>
+    <Grid Background="#FF81C3BE">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="300"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Menu Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Background="#FF255F53">
+            <MenuItem Header="File" FontSize="16">
+                <MenuItem Header="New" Command="New" InputGestureText="Ctrl+N"></MenuItem>
+                <MenuItem Header="Open" Command="Open" InputGestureText="Ctrl+O"></MenuItem>
+                <MenuItem Header="Save" Command="SaveAs" InputGestureText="Ctrl+S"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Edit" FontSize="16">
+                <MenuItem Header="Add VMTime" Click="MenuItem_Click"/>
+                <MenuItem Header="Add VMAccuracy" Click="MenuItem_Click"/>
+            </MenuItem>
+        </Menu>
+        <StackPanel Grid.Row="2" Width="250" Height="280" Margin="0,30,0,40">
+            <TextBlock HorizontalAlignment="Center" Width="200" Margin="0 20 0 5"><Run Language="ru-ru" Text="Чи"/><Run Text="сло узлов сетки"/><Run Language="ru-ru" Text=":"/></TextBlock>
+            <TextBox x:Name="InputBox1" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" Height="20" DataContext="{Binding curr_grid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}, Mode=TwoWay}">
+                <TextBox.Text>
+                    <Binding Path="len" Converter="{StaticResource LenConv}"/>
+                </TextBox.Text>
+            </TextBox>
+
+            <TextBlock HorizontalAlignment="Center" Width="200" Margin="0 30 0 5"><Run Language="ru-ru" Text="Границы отрезка:"/><LineBreak/><Run Text="Пример: 1.000-5.000"/></TextBlock>
+            <TextBox x:Name="InputBox" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Width="200" Height="20" DataContext="{Binding curr_grid, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}, Mode=TwoWay}">
+                <TextBox.Text>
+                    <MultiBinding Converter="{StaticResource GridConv}">
+                        <Binding Path="limits[0]"/>
+                        <Binding Path="limits[1]"/>
+                    </MultiBinding>
+                </TextBox.Text>
+            </TextBox>
+            <TextBlock HorizontalAlignment="Center" Width="200" Margin="0 30 0 5" Height="16"><Run Language="ru-ru" Text="Функция:"/></TextBlock>
+            <ComboBox Width="200" IsSynchronizedWithCurrentItem="True" SelectedIndex="{Binding curr_grid.func, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" Height="20">
+                <ComboBoxItem Content="vmdLn"/>
+                <ComboBoxItem Content="vmsLn"/>
+                <ComboBoxItem Content="vmdLGamma"/>
+                <ComboBoxItem Content="vmsLGamma"/>
+            </ComboBox>
+        </StackPanel>
+        <ListBox x:Name="listBoxL" Grid.Row="2" Grid.Column="1" Height="280" Margin="0,30,0,40" Width="250" HorizontalAlignment="Stretch" ItemsSource="{Binding view.benchmark.time, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" Grid.RowSpan="2">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding parameters.func, StringFormat='Функция: \{0\}'}"/>
+                        <TextBlock Text="{Binding parameters.len, StringFormat='Количество узлов сетки: \{0\}'}"/>
+                        <TextBlock Text="{Binding parameters.limits[0],Converter={StaticResource FloatConv}, StringFormat='Начало отрезка: \{0\}'}"/>
+                        <TextBlock Text="{Binding parameters.limits[1], Converter={StaticResource FloatConv}, StringFormat='Конец отрезка: \{0\}'}"/>
+                        <TextBlock Text="{Binding parameters.step, Converter={StaticResource FloatConv}, StringFormat='Шаг: \{0\}'}"/>
+                        <TextBlock Text="{Binding time_vml_HA, Converter={StaticResource DoubleConv}, StringFormat='Время HA: \{0\}'}"/>
+                        <TextBlock Text="{Binding time_vml_EP, Converter={StaticResource DoubleConv}, StringFormat='Время EP: \{0\}'}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox x:Name="listBoxR" Grid.Row="2" Grid.Column="2" Height="280" Margin="0,30,0,40" Width="250" HorizontalAlignment="Stretch" ItemsSource="{Binding view.benchmark.prec, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" Grid.RowSpan="2">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel>
+                        <TextBlock Text="{Binding parameters.func, StringFormat='Функция: {0}'}"/>
+                        <TextBlock Text="{Binding parameters.len, StringFormat='Количество узлов сетки: {0}'}"/>
+                        <TextBlock Text="{Binding parameters.limits[0], Converter={StaticResource FloatConv}, StringFormat='Начало отрезка: \{0\}'}"/>
+                        <TextBlock Text="{Binding parameters.limits[1], Converter={StaticResource FloatConv}, StringFormat='Конец отрезка: \{0\}'}"/>
+                        <TextBlock Text="{Binding parameters.step, Converter={StaticResource FloatConv}, StringFormat='Шаг: \{0\}'}"/>
+                        <TextBlock>Макс. значение модуля разности:</TextBlock>
+                        <TextBlock Text="{Binding max_diff_abs, Converter={StaticResource DoubleConv}, StringFormat='\{0\}'}"/>
+                        <TextBlock>Аргумент, при котором достигается</TextBlock>
+                        <TextBlock Text="{Binding max_diff_arg, Converter={StaticResource DoubleConv}, StringFormat='это значение: \{0\}'}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Label x:Name="label1" Content="     VMTime:" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Height="29" Width="112" Target="{Binding ElementName=listBoxL, Mode=OneWay}" Margin="0,15,0,0" Grid.RowSpan="2" FontSize="14"/>
+        <Label x:Name="label2" Content="     VMAccuracy:" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Top" Height="29" Width="131" Target="{Binding ElementName=listBoxR, Mode=OneWay}" Margin="0,15,0,0" Grid.RowSpan="2" FontSize="14"/>
+        <TextBlock x:Name="AdditionalInfoL" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="3" Text="{Binding SelectedItem, Converter={StaticResource VMTimeConv}, ElementName=listBoxL}" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0,0" Height="34" Width="264" TextAlignment="Center" Margin="0,12,0,0"/>
+        <TextBlock x:Name="AdditionalInfoR" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="3" Text="{Binding SelectedItem, Converter={StaticResource VMAccuracyConv}, ElementName=listBoxR}" TextWrapping="Wrap" VerticalAlignment="Top" RenderTransformOrigin="0,0" Height="34" Width="265" TextAlignment="Center" Margin="0,12,0,0"/>
+        <TextBlock x:Name="Min_WML_HA_CoefOut" HorizontalAlignment="Center" Grid.Row="3" Text="{Binding view.benchmark.min_HA_EP_coeff, Converter={StaticResource MinCoefConv}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" TextWrapping="Wrap" VerticalAlignment="Top" Height="34" Width="265" TextAlignment="Center" Margin="0,25,0,0" Grid.RowSpan="2"/>
+        <TextBlock x:Name="Max_WML_HA_CoefOut" HorizontalAlignment="Center" Grid.Row="2" Text="{Binding view.benchmark.max_HA_EP_coeff, Converter={StaticResource MaxCoefConv}, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:MainWindow}}}" TextWrapping="Wrap" VerticalAlignment="Top" Height="34" Width="265" TextAlignment="Center" Margin="0,291,0,0" Grid.RowSpan="2"/>
+        <TextBlock x:Name="SaveStatus" HorizontalAlignment="Left" Grid.Row="4" Text="{Binding view.Changed, Converter={StaticResource ChangedConv}, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, UpdateSourceTrigger=PropertyChanged}" Foreground="Red" TextWrapping="Wrap" VerticalAlignment="Top" Height="34" Width="270" TextAlignment="Center" Grid.Column="1" Grid.ColumnSpan="2" Margin="198,18,0,0" RenderTransformOrigin="0.496,-0.416"/>
+    </Grid>
+</Window>
+
